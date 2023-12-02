@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
 import CheckListHeader from './src/components/ChecklistHeader';
+import CheckLists from './src/components/Checklist';
 
 function App(): JSX.Element {
   const [selectedWeek, setSeletedWeek] = useState(15);
@@ -13,6 +14,7 @@ function App(): JSX.Element {
   function selectWeek(week: number) {
     setSeletedWeek(week);
   }
+
   return (
     <SafeAreaView>
       <StatusBar />
@@ -23,6 +25,7 @@ function App(): JSX.Element {
           selectWeek={selectWeek}
           selectedWeek={selectedWeek}
         />
+        <CheckLists isEditMode={isEditMode} week={selectedWeek} />
       </View>
     </SafeAreaView>
   );
