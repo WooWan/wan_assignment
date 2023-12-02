@@ -51,13 +51,13 @@ function CheckLists({isEditMode, week}: Props) {
       return;
     }
     setChecklist(prev => [
-      ...prev,
       {
         id: Math.random().toString(),
         content: input,
         isCompleted: false,
-        weekNumber: week,
+        weekNumber: week + 1,
       },
+      ...prev,
     ]);
 
     setInput('');
