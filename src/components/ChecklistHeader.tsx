@@ -53,7 +53,6 @@ function CheckListHeader({
   };
 
   return (
-    //TODO: 왼쪽 여백
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Checklists</Text>
