@@ -47,6 +47,9 @@ function CheckLists({isEditMode, week}: Props) {
   );
 
   const handleAddChecklist = () => {
+    if (!input) {
+      return;
+    }
     setChecklist(prev => [
       ...prev,
       {
@@ -88,7 +91,7 @@ function CheckLists({isEditMode, week}: Props) {
             placeholder="Add a checklist..."
           />
           <TouchableOpacity
-            style={styles.uploadButton}
+            style={[styles.uploadButton, !input && styles.enabled]}
             onPress={handleAddChecklist}>
             <Image
               source={require('../assets/Arrowup.png')}
@@ -155,6 +158,9 @@ const styles = StyleSheet.create({
   },
   invisible: {
     display: 'none',
+  },
+  enabled: {
+    opacity: 0.5,
   },
   uploadIcon: {
     width: 18,
