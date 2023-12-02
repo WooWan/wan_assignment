@@ -16,9 +16,9 @@ function App(): JSX.Element {
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <StatusBar />
-      <View style={styles.container}>
+      <View style={styles.main}>
         <CheckListHeader
           isEditMode={isEditMode}
           toggleEditMode={toggleEditMode}
@@ -33,8 +33,10 @@ function App(): JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'flex-start',
-    height: '100%',
+    flex: 1,
+  },
+  main: {
+    flex: 1,
   },
 });
 
