@@ -8,7 +8,6 @@ type Props = {
   item: CheckItem;
   onDelete: (id: string) => void;
   isEditMode: boolean;
-  index: number;
   toggleCheckList: (index: string) => void;
 };
 
