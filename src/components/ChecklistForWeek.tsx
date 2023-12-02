@@ -1,6 +1,6 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {CheckItem} from '../types/checklist';
-import {FlatList, ListRenderItem} from 'react-native';
+import {StyleSheet} from 'react-native';
 import CheckListItem from './CheckListItem';
 import NoCheckList from './NoCheckList';
 import ProgressBar from './ProgressBar';
@@ -14,6 +14,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {useDebounce} from '../utils/useDebounce';
+import {FlashList} from '@shopify/flash-list';
 
 type Props = {
   checklist: CheckItem[];
@@ -37,7 +38,7 @@ function ChecklistForWeek({
 }: Props) {
   const debouncedWeek = useDebounce(week, 500);
   const checklistForWeek = useMemo(
-    () => checklist?.filter(item => item.weekNumber === debouncedWeek),
+    () => checklist?.filter(item => item.weekNumber === debouncedWeek + 1),
     [checklist, debouncedWeek],
   );
   const completedCount = useMemo(
@@ -50,21 +51,6 @@ function ChecklistForWeek({
   useEffect(() => {
     setPreviousWeek(debouncedWeek);
   }, [debouncedWeek]);
-
-  const renderCheckList: ListRenderItem<CheckItem> = useCallback(
-    ({item, index}) => {
-      return (
-        <CheckListItem
-          toggleCheckList={toggleCheckList}
-          isEditMode={isEditMode}
-          onDelete={handleDeleteChecklist}
-          item={item}
-          index={index}
-        />
-      );
-    },
-    [isEditMode, toggleCheckList, handleDeleteChecklist],
-  );
 
   const CustomExitingAnimation = (values: ExitAnimationsValues) => {
     'worklet';
@@ -93,17 +79,27 @@ function ChecklistForWeek({
     <Animated.View
       key={debouncedWeek}
       entering={CustomEnteringAnimation}
-      exiting={CustomExitingAnimation}>
+      exiting={CustomExitingAnimation}
+      style={styles.container}>
       {checklistForWeek?.length !== 0 ? (
         <>
           <ProgressBar
             total={checklistForWeek.length}
             completedCount={completedCount}
           />
-          <FlatList
+          <FlashList
             data={checklistForWeek}
-            renderItem={renderCheckList}
+            extraData={isEditMode}
+            renderItem={item => (
+              <CheckListItem
+                item={item.item}
+                isEditMode={isEditMode}
+                onDelete={handleDeleteChecklist}
+                toggleCheckList={toggleCheckList}
+              />
+            )}
             keyExtractor={item => item.id}
+            estimatedItemSize={44}
           />
         </>
       ) : (
@@ -112,5 +108,12 @@ function ChecklistForWeek({
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+  },
+});
 
 export default ChecklistForWeek;
