@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {theme} from '../ui/theme';
+import checkListData from '../data/checklist_seeds.json';
 
 type Props = {
   selectedWeek: number;
@@ -29,6 +30,7 @@ function CheckListHeader({
   const gap = 15;
   const padding = 180;
   const middleWidth = Dimensions.get('window').width / 2;
+  const maxWeek = Math.max(...checkListData.map(item => item.weekNumber));
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const updatedIndex = Math.floor(
@@ -68,7 +70,7 @@ function CheckListHeader({
         snapToInterval={itemWidth + gap}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}>
-        {[...Array(30).keys()].map(i => (
+        {[...Array(maxWeek).keys()].map(i => (
           <TouchableOpacity key={i} onPress={() => handleClickWeek(i)}>
             <View
               style={[styles.item, selectedWeek === i && styles.selectedItem]}>
