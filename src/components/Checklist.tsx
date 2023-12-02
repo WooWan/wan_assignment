@@ -12,6 +12,7 @@ import {CheckItem} from '../types/checklist';
 import checkListData from '../data/checklist_seeds.json';
 import ChecklistForWeek from './ChecklistForWeek';
 import {theme} from '../ui/theme';
+import ToastComponent from '../ui/Toast';
 
 type Props = {
   isEditMode: boolean;
@@ -22,17 +23,33 @@ function CheckLists({isEditMode, week}: Props) {
   const [checklist, setChecklist] = useState<CheckItem[]>(checkListData);
   const [isVisiable, setIsVisiable] = useState(false);
   const invisibleInputRef = useRef<TextInput>(null);
+  const [deletedItem, setDeletedItem] = useState<CheckItem | null>(null);
   const [input, setInput] = useState('');
+  const [toastVisible, setToastVisible] = useState(false);
 
   function handleDeleteChecklist(id: string) {
-    const updatedCheckList = checklist?.filter(item => item.id !== id);
-    setChecklist(updatedCheckList);
+    setToastVisible(true);
+    const itemToDelete = checklist.find(item => item.id === id);
+    if (itemToDelete) {
+      setDeletedItem(itemToDelete);
+      const updatedCheckList = checklist.filter(item => item.id !== id);
+      setChecklist(updatedCheckList);
+    }
+  }
+
+  function undoDelete() {
+    setToastVisible(false);
+    if (deletedItem) {
+      setChecklist(prev => [deletedItem, ...prev]);
+      setDeletedItem(null);
+    }
   }
 
   function handleAddCheckList() {
     invisibleInputRef.current && invisibleInputRef.current.focus();
     setIsVisiable(true);
   }
+
   const toggleCheckList = useCallback(
     (id: string) => {
       const updatedCheckList = checklist?.map(item => {
@@ -100,6 +117,11 @@ function CheckLists({isEditMode, week}: Props) {
           </TouchableOpacity>
         </View>
       </View>
+      <ToastComponent
+        message="Checklists deleted"
+        isVisible={toastVisible}
+        onPress={undoDelete}
+      />
     </KeyboardAvoidingView>
   );
 }
